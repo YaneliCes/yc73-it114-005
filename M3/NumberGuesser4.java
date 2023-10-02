@@ -127,17 +127,30 @@ public class NumberGuesser4 {
             return;
         }
         System.out.println("You guessed " + guess);
+        /*
+         * yc73
+         * 9/29/23
+         * IT114-005
+         */
         if (guess == number) {
             win();
             pickNewRandom = true;
         } else {
+            System.out.println("That's wrong");
+
+        //Display higher or lower as a hint after a wrong guess
             if (guess < number) {
                 System.out.println("Higher!");
             }
             else {
                 System.out.println("Lower!");
             }
-
+        /*
+         * yc73
+         * 9/29/23
+         * IT114-005
+         */
+        //Display a cold, warm, hot indicator based on how close to the correct value the guess is 
             int difference = Math.abs(number - guess);
             if (difference >= 7) {
                 System.out.println("You're cold.");
@@ -149,7 +162,6 @@ public class NumberGuesser4 {
                 System.out.println("You're hot!");
             }
         
-            System.out.println("That's wrong");
             strikes++;
             if (strikes >= maxStrikes) {
                 lose();
