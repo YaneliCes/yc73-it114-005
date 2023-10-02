@@ -131,6 +131,24 @@ public class NumberGuesser4 {
             win();
             pickNewRandom = true;
         } else {
+            if (guess < number) {
+                System.out.println("Higher!");
+            }
+            else {
+                System.out.println("Lower!");
+            }
+
+            int difference = Math.abs(number - guess);
+            if (difference >= 7) {
+                System.out.println("You're cold.");
+            }
+            else if (difference >= 4) {
+                System.out.println("You're warm.");
+            }
+            else if (difference >= 1) {
+                System.out.println("You're hot!");
+            }
+        
             System.out.println("That's wrong");
             strikes++;
             if (strikes >= maxStrikes) {
