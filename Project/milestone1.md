@@ -1,0 +1,53 @@
+<table><tr><td> <em>Assignment: </em> It114 Milestone1</td></tr>
+<tr><td> <em>Student: </em> Yaneli Cestona (yc73)</td></tr>
+<tr><td> <em>Generated: </em> 10/23/2023 10:54:40 PM</td></tr>
+<tr><td> <em>Grading Link: </em> <a rel="noreferrer noopener" href="https://learn.ethereallab.app/homework/IT114-005-F23/it114-milestone1/grade/yc73" target="_blank">Grading</a></td></tr></table>
+<table><tr><td> <em>Instructions: </em> <ol><li>Create a new branch called Milestone1</li><li>At the root of your repository create a folder called Project if one doesn't exist yet</li><ol><li>You will be updating this folder with new code as you do milestones</li><li>You won't be creating separate folders for milestones; milestones are just branches</li></ol><li>Create a milestone1.md file inside the Project folder</li><li>Git add/commit/push it to Github (yes it'll be blank for now)</li><li>Create a pull request from Milestone1 to main (don't complete/merge it yet, just have it in open status)</li><li>Copy in the latest Socket sample code from the most recent Socket Part example of the lessons</li><ol><li>Recommended Part 5 (clients should be having names at this point and not ids)</li><li><a href="https://github.com/MattToegel/IT114/tree/Module5/Module5">https://github.com/MattToegel/IT114/tree/Module5/Module5</a>&nbsp;<br></li></ol><li>Fix the package references at the top of each file (these are the only edits you should do at this point)</li><li>Git add/commit the baseline</li><li>Ensure the sample is working and fill in the below deliverables</li><ol><li>Note: The client commands likely are different in part 5 with the /name and /connect options instead of just connect</li></ol><li>Get the markdown content or the file and paste it into the milestone1.md file or replace the file with the downloaded version</li><li>Git add/commit/push all changes</li><li>Complete the pull request merge from step 5</li><li>Locally checkout main</li><li>git pull origin main</li></ol></td></tr></table>
+<table><tr><td> <em>Deliverable 1: </em> Startup </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
+<tr><td><table><tr><td> <em>Sub-Task 1: </em> Add screenshot showing your server being started and running</td></tr>
+<tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fyc73%2F2023-10-24T00.17.27Screenshot%202023-10-23%20193635.png.webp?alt=media&token=f729db6b-4726-4fb5-840d-462adb41b6a4"/></td></tr>
+<tr><td> <em>Caption:</em> <p>Server listening to its port<br></p>
+</td></tr>
+</table></td></tr>
+<tr><td> <em>Sub-Task 2: </em> Add screenshot showing your client being started and running</td></tr>
+<tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fyc73%2F2023-10-24T00.17.56Screenshot%202023-10-23%20193635.png.webp?alt=media&token=2ae00ab1-9630-4f13-889a-c30cd623a8e6"/></td></tr>
+<tr><td> <em>Caption:</em> <p>Client waiting for input<br></p>
+</td></tr>
+</table></td></tr>
+<tr><td> <em>Sub-Task 3: </em> Briefly explain the connection process</td></tr>
+<tr><td> <em>Response:</em> <p><font size="2">The server-side of the connection works by creating a &#39;ServerSocket&#39; object and<br>specifying the port it will be listening on. Then it will wait until<br>a client connects and accepts the incoming connections (&#39;serverSocket.accept()&#39;). After accepting, the server<br>will create a &#39;ServerThread&#39; object to handle communication with the client.&nbsp;</font><div><font size="2">The client-side<br>of the connection works by creating a &#39;Socket&#39; object and specifies the server&#39;s<br>port number, sets up input and output streams for connection, attempts a connection,<br>and when the server connects and accepts, the client is able to communicate<br>with the server.</font></div><div><font size="2">The&nbsp;socket steps until the server is waiting for messages from<br>the client are: the server creates a socket that listens on a specific<br>port, the server socket enters a waiting state for a client to connect,<br>then a client creates a socket and can connect to the server (with<br>the port number), when the client connects the server returns a socket to<br>represent a connection to that client and created a server thread to handle<br>communication, and now the client can send and receive data over the socket.</font></div><br></p><br></td></tr>
+</table></td></tr>
+<table><tr><td> <em>Deliverable 2: </em> Sending/Receiving </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
+<tr><td><table><tr><td> <em>Sub-Task 1: </em> Add screenshot(s) showing evidence related to the checklist</td></tr>
+<tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fyc73%2F2023-10-24T00.19.31Screenshot%202023-10-23%20194640.png.webp?alt=media&token=4dbd30e8-a823-4c2d-83ab-744c0f1d7385"/></td></tr>
+<tr><td> <em>Caption:</em> <p>3 clients connected to server (each client is highlighted by a different color)<br></p>
+</td></tr>
+<tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fyc73%2F2023-10-24T00.21.16Screenshot%202023-10-23%20195501.png.webp?alt=media&token=4cbd3c36-414c-41ef-a1d4-07c027e61b39"/></td></tr>
+<tr><td> <em>Caption:</em> <p>Sever sends message to all clients in the same room (showing who the<br>message is from) (green is one room &amp; blue is the other room)<br></p>
+</td></tr>
+<tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fyc73%2F2023-10-24T00.24.18Screenshot%202023-10-23%20195501.png.webp?alt=media&token=48cc4bde-7545-4144-8010-65932386e5ca"/></td></tr>
+<tr><td> <em>Caption:</em> <p>Clients in different rooms can&#39;t send/receive messages to each other (green is one<br>room &amp; blue is the other room)<br></p>
+</td></tr>
+</table></td></tr>
+<tr><td> <em>Sub-Task 2: </em> Briefly explain how the messages are sent, broadcasted (sent to all connected clients), and received</td></tr>
+<tr><td> <em>Response:</em> <p>From the client&#39;s perspective of sending, when the client types and sends a<br>message, a method constructs an object containing the message, and server receives and<br>processes the object.<div>From the ServerThread, it receives the object from the client, it<br>is responsible for the messages,</div><div>it processes commands or if it is a regular<br>message then the thread forwards it to the appropriate room to broadcast it.&nbsp;</div><div>From<br>the Room perspective, it processes the message and checks if it contains any<br>commands (like joining rooms or disconnecting), and if it&#39;s a regular message it<br>broadcasts the message to all clients in that room.&nbsp;</div><div>From the client&#39;s perspective, when<br>the message is broadcasted, each client, including the sender, receives the message, and<br>the client processes the message and it gets displayed on their interface.</div><br></p><br></td></tr>
+</table></td></tr>
+<table><tr><td> <em>Deliverable 3: </em> Disconnecting / Terminating </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
+<tr><td><table><tr><td> <em>Sub-Task 1: </em> Add screenshot(s) showing evidence related to the checklist</td></tr>
+<tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fyc73%2F2023-10-24T00.26.31Screenshot%202023-10-23%20200314.png.webp?alt=media&token=4c81b9e2-9f68-4a83-8b06-253f2a53c27e"/></td></tr>
+<tr><td> <em>Caption:</em> <p>Client disconnecting from server (shows disconnected message to other clients in the blue<br>room)<br></p>
+</td></tr>
+<tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fyc73%2F2023-10-24T00.29.15Screenshot%202023-10-23%20200817.png.webp?alt=media&token=c8734fb1-21fa-43eb-a4f7-426b478c2bbc"/></td></tr>
+<tr><td> <em>Caption:</em> <p>Shows server terminating<br></p>
+</td></tr>
+</table></td></tr>
+<tr><td> <em>Sub-Task 2: </em> Briefly explain how the various disconnects/terminations are handled</td></tr>
+<tr><td> <em>Response:</em> <p>When a client gets disconnected from a Socket perspective, it triggers an exception<br>in the server&#39;s server thread class, and when caught the server then closes<br>the client&#39;s socket connection.&nbsp;<div>The client program doesn&#39;t crash when the server disconnects/terminates because<br>when it catches the exception it properly handles it, ensuring that the resources<br>associated with the client&#39;s connection are properly released, and prevents the client program<br>from encountering any unhandled exceptions and allows the client to continue running.</div><div>The server<br>doesn&#39;t crash from the client(s) disconnecting because the server catches the exception, cleans<br>up, and continues running.</div><br></p><br></td></tr>
+</table></td></tr>
+<table><tr><td> <em>Deliverable 4: </em> Misc </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707773-e6aef7cb-d5b2-4053-bbb1-b09fc609041e.png"></td></tr>
+<tr><td><table><tr><td> <em>Sub-Task 1: </em> Add the pull request for this branch</td></tr>
+<tr><td> <a rel="noreferrer noopener" target="_blank" href="https://github.com/yaneliii/yc73-it114-005/pull/5">https://github.com/yaneliii/yc73-it114-005/pull/5</a> </td></tr>
+<tr><td> <em>Sub-Task 2: </em> Talk about any issues or learnings during this assignment</td></tr>
+<tr><td> <em>Response:</em> <p>I learned the key components of how communication is facilitated between clients and<br>the server, understanding how connections are established with a client, how messages are<br>received, where the messages are processed, and how the messages get to the<br>right room and the clients. I did not have any issues with this<br>topic.&nbsp;<br></p><br></td></tr>
+</table></td></tr>
+<table><tr><td><em>Grading Link: </em><a rel="noreferrer noopener" href="https://learn.ethereallab.app/homework/IT114-005-F23/it114-milestone1/grade/yc73" target="_blank">Grading</a></td></tr></table>
