@@ -231,6 +231,10 @@ public class Room implements AutoCloseable {
             // it was a command, don't broadcast
             return;
         }
+
+        //yc73
+        message = replaceMessage(message);
+
         long from = sender == null ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
         Iterator<ServerThread> iter = clients.iterator();
         while (iter.hasNext()) {
@@ -241,6 +245,57 @@ public class Room implements AutoCloseable {
             }
         }
     }
+
+    //yc73
+    private String replaceMessage(String message) {
+        //calls "formatMessage" to replace triggers with html tags
+        //bold
+        message = formatMessage(message, "*", "<b>", "</b>");
+        //italics
+        message = formatMessage(message, "-", "<i>", "</i>");
+        //underline
+        message = formatMessage(message, "_", "<u>", "</u>");
+
+        //calls "formatMessage" to replace color triggers with html tags
+        //red
+        message = formatMessage(message,"^", "<font color=\"red\">", "</font>");
+        //green
+        message = formatMessage(message, "%", "<font color=\"green\">", "</font>");
+        //blue
+        message = formatMessage(message, "$", "<font color=\"blue\">", "</font>");
+
+        return message;
+    }
+
+    //yc73
+    private String formatMessage(String message, String trigger, String openTag, String closeTag) {
+        int index = -1;
+        //loop searches through the user's message for pairs of triggers
+        while ((index = message.indexOf(trigger, index + 1)) != -1) {
+            //finds the index of the first starting trigger
+            int startIndex = index;
+            //finds the index of the closing trigger
+            int endIndex = message.indexOf(trigger, startIndex + 1);
+    
+            //if the second, lcosing, trigger is not present, then it continues to the next pair
+            if (endIndex == -1) {
+                continue;
+            }
+            //replaces the triggers with the appropriate html tags
+            //grabs the very start of the message up to (but not including) the index of where the starting trigger is
+            //concatenates the first html tag right after the users unformatted text
+            //then the text after the first trigger, up to before the closing trigger, is taken and put between the html tags
+            //concatenates the closing html tag right after the formatted text
+            //then it grabs the rest of the remaining unformatted text right after the closing trigger
+            message = message.substring(0, startIndex) + openTag + message.substring(startIndex + 1, endIndex) + closeTag + message.substring(endIndex + 1);
+            //to avoid an infinite loop, this updates to the index right after the closing html tag 
+            //so it doesn't search through the same part of the message
+            index = endIndex + closeTag.length();
+        }
+        return message;
+    }
+
+
 
     protected synchronized void sendConnectionStatus(ServerThread sender, boolean isConnected) {
         Iterator<ServerThread> iter = clients.iterator();
