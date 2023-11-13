@@ -21,6 +21,8 @@ public class Room implements AutoCloseable {
     private final static String DISCONNECT = "disconnect";
     private final static String LOGOUT = "logout";
     private final static String LOGOFF = "logoff";
+    private final static String FLIP = "flip";
+    private final static String ROLL = "roll";
     private static Logger logger = Logger.getLogger(Room.class.getName());
 
     public Room(String name) {
@@ -129,6 +131,44 @@ public class Room implements AutoCloseable {
                     case LOGOFF:
                         Room.disconnectClient(client, this);
                         break;
+                        
+                    case FLIP:
+                        int toss = (int)(Math.random()*2);
+			            sendMessage(null, String.format("User %s flipped %s!", client.getClientName(), toss == 0 ? "heads" : "tails"));
+			            break;
+
+                    case ROLL:
+                        int totalRolled = 0;
+                        try {
+                            if (!message.contains("d")) {
+                                int chosenDie = Integer.parseInt(message.split(" ")[1]);
+                                int dieRolled = (int)((Math.random()*chosenDie) + 1);
+                                sendMessage(null, String.format("%s rolled %d", client.getClientName(), dieRolled));
+                                break;
+                            }
+                            
+                            else if (message.contains("d")) {
+                                int numOfDice = Integer.parseInt(message.split(" ")[1].split("d")[0]);
+                                int numOfFace = Integer.parseInt(message.split(" ")[1].split("d")[1]);
+                                
+                                for(int i=0; i < numOfDice; i++) {
+                                    int diceValue = (int)((Math.random()*numOfFace) + 1);
+                                    totalRolled += diceValue;
+                                }
+                                sendMessage(null, String.format("%s chose %d" + "d" + "%d" + " and got %d!", client.getClientName(), numOfDice, numOfFace, totalRolled));
+                                break;
+                            }                        
+                        }
+                
+                        catch (ArrayIndexOutOfBoundsException e) {
+                            sendMessage(null, "Must include a number. (Ex: /roll 100 or /roll 1d10)");
+                            break;
+                        }
+                        catch (NumberFormatException e) {
+                            sendMessage(null, "Invalid input. You must type a number. (Ex: /roll 100 or /roll 1d10)");
+                            break;
+                        }
+
                     default:
                         wasCommand = false;
                         break;
