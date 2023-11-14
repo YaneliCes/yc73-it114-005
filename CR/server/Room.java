@@ -131,12 +131,15 @@ public class Room implements AutoCloseable {
                     case LOGOFF:
                         Room.disconnectClient(client, this);
                         break;
-                        
+                    //yc73
+                    //11/6/23    
                     case FLIP:
                         int toss = (int)(Math.random()*2);
 			            sendMessage(null, String.format("User %s flipped %s!", client.getClientName(), toss == 0 ? "heads" : "tails"));
 			            break;
 
+                    //yc73
+                    //11/7/23
                     case ROLL:
                         int totalRolled = 0;
                         try {
@@ -155,7 +158,7 @@ public class Room implements AutoCloseable {
                                     int diceValue = (int)((Math.random()*numOfFace) + 1);
                                     totalRolled += diceValue;
                                 }
-                                sendMessage(null, String.format("%s chose %d" + "d" + "%d" + " and got %d!", client.getClientName(), numOfDice, numOfFace, totalRolled));
+                                sendMessage(null, String.format("%s chose %d" + "d" + "%d" + " and rolled %d!", client.getClientName(), numOfDice, numOfFace, totalRolled));
                                 break;
                             }                        
                         }
@@ -233,6 +236,7 @@ public class Room implements AutoCloseable {
         }
 
         //yc73
+        //11/7/23
         message = replaceMessage(message);
 
         long from = sender == null ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
@@ -247,6 +251,7 @@ public class Room implements AutoCloseable {
     }
 
     //yc73
+    //11/9/23
     private String replaceMessage(String message) {
         //calls "formatMessage" to replace triggers with html tags
         //bold
@@ -268,6 +273,7 @@ public class Room implements AutoCloseable {
     }
 
     //yc73
+    //11/9/23
     private String formatMessage(String message, String trigger, String openTag, String closeTag) {
         int index = -1;
         //loop searches through the user's message for pairs of triggers

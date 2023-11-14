@@ -79,6 +79,10 @@ public class ServerThread extends Thread {
 
     // send methods
 
+    //yc73
+    //11/13/23
+    //this sends a payload to signal that a client is ready for further action (like starting a game or recieving data)
+    //so the payload type is set to ready and it has the client unique ID
     public boolean sendReadyStatus(long clientId) {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.READY);
@@ -86,6 +90,8 @@ public class ServerThread extends Thread {
         return send(p);
     }
 
+    //yc73
+    //when a client wants to join a room, this handles their request and creates a payload with the specific room name for the client
     public boolean sendRoomName(String name) {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.JOIN_ROOM);
@@ -93,6 +99,8 @@ public class ServerThread extends Thread {
         return send(p);
     }
 
+    //yc73
+    //when the list of current rooms is updated or a client wants to see the list of room available this sends a payload that contains an array or rooms
     public boolean sendRoomsList(String[] rooms, String message) {
         RoomResultPayload payload = new RoomResultPayload();
         payload.setRooms(rooms);
@@ -102,6 +110,8 @@ public class ServerThread extends Thread {
         return send(payload);
     }
 
+    //yc73
+    //to synchronize clients, this sends current/existing information on a client (like the ID and name) to keep everything consistent and up to date
     public boolean sendExistingClient(long clientId, String clientName) {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.SYNC_CLIENT);
@@ -110,12 +120,16 @@ public class ServerThread extends Thread {
         return send(p);
     }
 
+    //yc73
+    //again to keep the list of clients up to date and refreshed, this sends a command to reset the list of users
     public boolean sendResetUserList() {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.RESET_USER_LIST);
         return send(p);
     }
 
+    //yc73
+    //this sends a payload that contains the client's ID
     public boolean sendClientId(long id) {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.CLIENT_ID);
@@ -123,6 +137,8 @@ public class ServerThread extends Thread {
         return send(p);
     }
 
+    //yc73
+    //sends a client's message to the other clients who are in the same room, including the content of the message and the ID of the sender
     public boolean sendMessage(long clientId, String message) {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.MESSAGE);
@@ -131,6 +147,9 @@ public class ServerThread extends Thread {
         return send(p);
     }
 
+    //yc73
+    //11/12/23
+    //this handles the connection status of a client, notifying whether they join or leave a room, so the payload includes the client's ID, name, and connection status
     public boolean sendConnectionStatus(long clientId, String who, boolean isConnected) {
         Payload p = new Payload();
         p.setPayloadType(isConnected ? PayloadType.CONNECT : PayloadType.DISCONNECT);
@@ -140,6 +159,8 @@ public class ServerThread extends Thread {
         return send(p);
     }
 
+    //yc73
+    //this actually sends off the payloads that were constructed to the clients and also handles errors that might occur like if a client disconnected
     private boolean send(Payload payload) {
         try {
             logger.log(Level.FINE, "Outgoing payload: " + payload);
