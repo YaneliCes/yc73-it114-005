@@ -4,15 +4,11 @@ import java.io.Serializable;
 
 public class Payload implements Serializable {
     // read https://www.baeldung.com/java-serial-version-uid
-    private static final long serialVersionUID = 1L;// change this if the class changes
+    private static final long serialVersionUID = 3L;// change this if the class changes
 
     /**
      * Determines how to process the data on the receiver's side
      */
-
-    //yc73
-    //11/12/23
-    //this determines the type of payload, used to decide how to handle the data in the payload or how to route it (like a message, command, etc.)
     private PayloadType payloadType;
 
     public PayloadType getPayloadType() {
@@ -26,11 +22,6 @@ public class Payload implements Serializable {
     /**
      * Who the payload is from
      */
-    
-     //yc73
-    //11/12/23
-    //this represents the name or whatever the identifier is of a client, which is used to identify the sender of a payload
-    //also useful to display the client who sent the message   
     private String clientName;
 
     public String getClientName() {
@@ -41,10 +32,6 @@ public class Payload implements Serializable {
         this.clientName = clientName;
     }
 
-    //yc73
-    //11/12/23
-    //likely used internally as unique identifiers (whole numbers) for the clients; used for identification, management, etc. 
-    //for cases where it is more efficient to use whole numbers to distinguish clients rather than a string like clientName
     private long clientId;
 
     public long getClientId() {
@@ -58,10 +45,6 @@ public class Payload implements Serializable {
     /**
      * Generic text based message
      */
-
-    //yc73
-    //11/12/23
-    //nessage holds the text as a string, which can be used for sending user messages, transmitting data between proccesses (like commands), or to log/record actions
     private String message;
 
     public String getMessage() {
@@ -72,10 +55,23 @@ public class Payload implements Serializable {
         this.message = message;
     }
 
+    /**
+     * Generic number for example sake
+     */
+    private int number;
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
     @Override
     public String toString() {
-        return String.format("Type[%s],ClientId[%s,] ClientName[%s], Message[%s]", getPayloadType().toString(),
-                getClientId(), getClientName(),
+        return String.format("ClientId[%s], ClientName[%s], Type[%s], Number[%s], Message[%s]", getClientId(),
+                getClientName(), getPayloadType().toString(), getNumber(),
                 getMessage());
     }
 }
