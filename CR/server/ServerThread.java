@@ -50,7 +50,10 @@ public class ServerThread extends Thread {
     }
 
     protected void setClientName(String name) {
-        if (name == null || name.isBlank()) {
+        //yc73
+        //11/16/23
+        if (name == null || name.isBlank() || name.contains(" ")) {
+        // added ^ || name.contains(" ")
             System.err.println("Invalid client name being set");
             return;
         }
