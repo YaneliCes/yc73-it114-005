@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,6 +38,28 @@ public class ServerThread extends Thread {
     public boolean isRunning() {
         return isRunning;
     }
+
+    //yc73
+    //11/18/23
+    List<String> clientsMuted = new ArrayList<String>();
+
+    public boolean isMuted(String clientName) {
+        return clientsMuted.contains(clientName);
+    }
+    
+
+    public void mute(String clientName) {
+        if (!isMuted(clientName)) {
+            clientsMuted.add(clientName);
+        }
+    }
+
+    public void unmute(String clientName) {
+        if (isMuted(clientName)) {
+            clientsMuted.remove(clientName);
+        }
+    }
+
 
     private void info(String message) {
         System.out.println(String.format("Thread[%s]: %s", getId(), message));

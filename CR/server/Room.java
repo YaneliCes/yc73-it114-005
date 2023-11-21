@@ -22,6 +22,16 @@ public class Room implements AutoCloseable {
 	private final static String LOGOFF = "logoff";
 	private final static String FLIP = "flip";
     private final static String ROLL = "roll";
+
+	//yc73
+	//11/17/23
+	private final static String PM = "@";
+
+	//yc73
+	//11/18/23
+	private final static String MUTE = "mute";
+	private final static String UNMUTE = "unmute";
+
 	private static Logger logger = Logger.getLogger(Room.class.getName());
 
 	public Room(String name) {
@@ -112,24 +122,23 @@ public class Room implements AutoCloseable {
 					case LOGOFF:
 						Room.disconnectClient(client, this);
 						break;
-
 						
                     //yc73
-                    //REMEMBER
+                    //11/16/23
                     case FLIP:
                         int toss = (int)(Math.random()*2);
-			            sendMessage(null, String.format("%s flipped a coin and got %s!", client.getClientName(), toss == 0 ? "heads" : "tails"));
+			            sendMessage(client, String.format("<font color='#7B68EE'>Flipped a coin and got %s", toss == 0 ? "heads" : "tails" + "</font>"));
 			            break;
+
                     //yc73
-                    //REMEMBER
+                    //11/16/23
                     case ROLL:
                     int totalRolled = 0;
                         try {
-                            
                             if (!message.contains("d")) {
                                 int chosenDie = Integer.parseInt(message.split(" ")[1]);
                                 int dieRolled = (int)((Math.random()*chosenDie) + 1);
-                                sendMessage(null, String.format("%s rolled %d", client.getClientName(), dieRolled));
+                                sendMessage(client, String.format("<font color='#1E90FF'>Rolled a die and got %s", dieRolled + "</font>"));
                                 break;
                             }
                             
@@ -141,19 +150,90 @@ public class Room implements AutoCloseable {
                                     int diceValue = (int)((Math.random()*numOfFace) + 1);
                                     totalRolled += diceValue;
                                 }
-                                sendMessage(null, String.format("%s chose %d" + "d" + "%d" + " and got %d!", client.getClientName(), numOfDice, numOfFace, totalRolled));
+                                sendMessage(client, String.format("<font color='#2E8B57'>Chose %s" + "d" + "%s" + " and rolled %s!", numOfDice, numOfFace, totalRolled) + "</font>");
                                 break;
                             }                        
                         }
 
                         catch (ArrayIndexOutOfBoundsException e) {
-                            sendMessage(null, "Must include a number. (Ex: /roll 100 or /roll 1d10)");
+							client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Must include a number. (Ex: /roll 100 or /roll 1d10)</font>");
                             break;
                         }
                         catch (NumberFormatException e) {
-                            sendMessage(null, "Invalid input. You must type a number. (Ex: /roll 100 or /roll 1d10)");
+                            client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Invalid input. You must type a number. (Ex: /roll 100 or /roll 1d10)</font>");
                             break;
                         }
+
+					//yc73
+					//11/18/23
+					case MUTE:
+						try {
+							String usersToMute = comm2[1];
+
+							if (isValidUsername(usersToMute)) {
+								//updates the mute status
+								client.mute(usersToMute);
+
+								List<String> mutedUsersList = new ArrayList<>();
+								mutedUsersList.add(usersToMute);
+								
+								//sends feedback to the sender
+								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#DC143C'>Users muted: " + usersToMute + "</font>");
+
+								//sends a private message to the muted user
+								sendPrivateMessage(null, mutedUsersList, "<font color='#DC143C'>You were muted by " + client.getClientName() + "</font>");
+							
+								break;
+							} 
+
+							else {
+								//if the username is not found
+								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Cannot /mute, client " + usersToMute + " does not exist</font>");
+								break;
+							}
+						}
+
+						catch (ArrayIndexOutOfBoundsException e) {
+							//if no username is inputed
+							client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Cannot /mute, input an existing user</font>");
+							break;
+						}
+
+
+					//yc73
+					//11/18/23
+					case UNMUTE:
+						try {
+							String usersToUnmute = comm2[1];
+							
+							if (isValidUsername(usersToUnmute)) {
+								//updates the mute status
+								client.unmute(usersToUnmute);
+								
+								List<String> unmutedUsersList = new ArrayList<>();
+								unmutedUsersList.add(usersToUnmute);
+
+								//sends feedback to the sender
+								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#006400'>Users unmuted: " + usersToUnmute + "</font>");
+
+								//sends a private message to the muted user
+								sendPrivateMessage(null, unmutedUsersList, "<font color='#006400'>You were unmuted by " + client.getClientName() + "</font>");
+
+								break;
+							}
+
+							else {
+								//if the username is not found
+								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Cannot /unmute, client " + usersToUnmute + " does not exist</font>");
+								break;
+							}
+						}
+
+						catch (ArrayIndexOutOfBoundsException e) {
+							//if no username is inputed
+							client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Cannot /unmute, input an existing user</font>");
+							break;
+						}
 
 
 					default:
@@ -161,6 +241,40 @@ public class Room implements AutoCloseable {
 						break;
 				}
 			}
+
+
+			//checks if the message starts with '@' which is the trigger for the private message command
+			else if (message.startsWith(PM)) {
+				//the message is split into two parts, the username in one part and the rest of the message in the other
+				String[] splitPM = message.split(" ", 2);
+				//splits the message to get '@username', then only grabs the 'username' next to the '@' 
+				String targetUsername = splitPM[0].substring(1);
+
+				//calls the method 'isValidUsername' to check if the username entered is a user that exists in the chatroom
+				if (isValidUsername(targetUsername)) {
+					//if the username exists, it considers the message as a private message
+					wasCommand = true;
+					//creates a new empty list to store usernames and keep track of who the private message is being sent to
+					List<String> pmClients = new ArrayList<String>();
+					//the username is added to the list 'pmClients'
+					pmClients.add(targetUsername);
+					//calls the 'sendPrivateMessage' method to actually send the message to the correct user
+
+					//sends to sender
+					//client.sendMessage(Constants.DEFAULT_CLIENT_ID, message);
+					client.sendMessage(client.getClientId(), "<font color='#5f5f5f'>(Whispered) </font>" + replaceMessage(message));
+
+					//sends to client
+					sendPrivateMessage(client, pmClients, "<font color='#5f5f5f'>(Whisper) </font>" + message);
+
+				} else {
+					//if the username is not found then the message will be considered a regular message
+					//tells the user who used the command that the username does not exist
+					client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>client @" + targetUsername + " does not exist</font>");
+				}
+			}
+
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -215,20 +329,65 @@ public class Room implements AutoCloseable {
 			return;
 		}
 
-		
         //yc73
         //11/7/23
         message = replaceMessage(message);
-
 
 		long from = (sender == null) ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
 		synchronized (clients) {
 			Iterator<ServerThread> iter = clients.iterator();
 			while (iter.hasNext()) {
 				ServerThread client = iter.next();
-				boolean messageSent = client.sendMessage(from, message);
-				if (!messageSent) {
-					handleDisconnect(iter, client);
+				//yc73
+				//11/18/23
+				//checks if the sender is muted by the client
+				if (sender == null || !client.isMuted(sender.getClientName())) {
+					boolean messageSent = client.sendMessage(from, message);
+					if (!messageSent) {
+						handleDisconnect(iter, client);
+					}
+				}
+			}
+		}
+	}
+
+	//yc73
+	//11/17/23
+	private boolean isValidUsername(String username) {
+		synchronized (clients) {
+			//goes trhough each client in the chatroom
+			for (ServerThread client : clients) {
+				//checks if the current client's name matches the username it is looking for
+				if (client.getClientName().equals(username)) {
+					//if it does match, it returns 'true' whihc means it found the username
+					return true;
+				}
+			}
+		}
+		//if the username is not found after checking all the clients, it returns 'false'
+		return false;
+	}
+
+	//yc73
+	//11/17/23
+	protected synchronized void sendPrivateMessage(ServerThread sender, List<String> ClientsList, String message) {
+		Iterator<ServerThread> iter = clients.iterator();
+		message = replaceMessage(message);
+		long from = (sender == null) ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
+
+		while (iter.hasNext()) {
+			ServerThread client = iter.next();
+			if (ClientsList.contains(client.getClientName())) {
+				//checks if the sender is muted by the client
+				if (sender == null || !client.isMuted(sender.getClientName())) {
+					boolean messageSent = client.sendMessage(from, message);
+					if (!messageSent) {
+						handleDisconnect(iter, client);
+					}
+				} 
+				else {
+					//notifies the sender that they are muted
+					sender.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#DC143C'>You cannot send a message to " + client.getClientName() + " as they have muted you.</font>");
 				}
 			}
 		}
