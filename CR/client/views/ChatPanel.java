@@ -155,6 +155,7 @@ public class ChatPanel extends JPanel {
         //yc73
         //11/16/23
         //help from this website: https://www.javatpoint.com/java-jeditorpane
+        //the "text/html" is what renders the HTML tags so they can be displayed correctly in the chat area
         JEditorPane textContainer = new JEditorPane("text/html", text);
         textContainer.setText("<html><body style='padding: 3; margin: 3; font-family: Arial;'>" + text + "</body></html>");
 

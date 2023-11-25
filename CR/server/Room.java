@@ -127,6 +127,7 @@ public class Room implements AutoCloseable {
                     //11/16/23
                     case FLIP:
                         int toss = (int)(Math.random()*2);
+						//JEditorPane being configured to "text/html" allows the html tags to be rendered and displayed correctly
 			            sendMessage(client, String.format("<font color='#7B68EE'>Flipped a coin and got %s", toss == 0 ? "heads" : "tails" + "</font>"));
 			            break;
 
@@ -138,7 +139,8 @@ public class Room implements AutoCloseable {
                             if (!message.contains("d")) {
                                 int chosenDie = Integer.parseInt(message.split(" ")[1]);
                                 int dieRolled = (int)((Math.random()*chosenDie) + 1);
-                                sendMessage(client, String.format("<font color='#1E90FF'>Rolled a die and got %s", dieRolled + "</font>"));
+								//JEditorPane being configured to "text/html" allows the html tags to be rendered and displayed correctly
+                                sendMessage(client, String.format("<font color='#1E90FF'>Rolled a %s sided die and got %s", chosenDie, dieRolled + "</font>"));
                                 break;
                             }
                             
@@ -150,6 +152,7 @@ public class Room implements AutoCloseable {
                                     int diceValue = (int)((Math.random()*numOfFace) + 1);
                                     totalRolled += diceValue;
                                 }
+								//JEditorPane being configured to "text/html" allows the html tags to be rendered and displayed correctly
                                 sendMessage(client, String.format("<font color='#2E8B57'>Chose %s" + "d" + "%s" + " and rolled %s!", numOfDice, numOfFace, totalRolled) + "</font>");
                                 break;
                             }                        
@@ -168,12 +171,14 @@ public class Room implements AutoCloseable {
 					//11/18/23
 					case MUTE:
 						try {
+							//grabs the target user to mute
 							String usersToMute = comm2[1];
 
 							if (isValidUsername(usersToMute)) {
-								//updates the mute status
+								//updates the mute lsit in ServerThread
 								client.mute(usersToMute);
 
+								//created to be used to send a private message to the muted user
 								List<String> mutedUsersList = new ArrayList<>();
 								mutedUsersList.add(usersToMute);
 								
@@ -204,12 +209,14 @@ public class Room implements AutoCloseable {
 					//11/18/23
 					case UNMUTE:
 						try {
+							//grabs the target user to unmute
 							String usersToUnmute = comm2[1];
 							
 							if (isValidUsername(usersToUnmute)) {
-								//updates the mute status
+								//updates the mute list in ServerThread
 								client.unmute(usersToUnmute);
 								
+								//created to be used to send a private message to the muted user
 								List<String> unmutedUsersList = new ArrayList<>();
 								unmutedUsersList.add(usersToUnmute);
 
@@ -261,14 +268,13 @@ public class Room implements AutoCloseable {
 					//calls the 'sendPrivateMessage' method to actually send the message to the correct user
 
 					//sends to sender
-					//client.sendMessage(Constants.DEFAULT_CLIENT_ID, message);
 					client.sendMessage(client.getClientId(), "<font color='#5f5f5f'>(Whispered) </font>" + replaceMessage(message));
 
 					//sends to client
 					sendPrivateMessage(client, pmClients, "<font color='#5f5f5f'>(Whisper) </font>" + message);
 
 				} else {
-					//if the username is not found then the message will be considered a regular message
+					//if the username is not found then the message will be considered a regular message (in case they did not want to use @ as a command but as a regular message)
 					//tells the user who used the command that the username does not exist
 					client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>client @" + targetUsername + " does not exist</font>");
 				}
