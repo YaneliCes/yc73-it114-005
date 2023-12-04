@@ -9,7 +9,10 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +20,8 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -28,10 +33,21 @@ import CR.client.Client;
 import CR.client.ClientUtils;
 import CR.client.ICardControls;
 
+//yc73
+//11/27/23
+import java.io.File;
+import java.io.IOException;
+import java.io.FileWriter;
+
 public class ChatPanel extends JPanel {
     private static Logger logger = Logger.getLogger(ChatPanel.class.getName());
     private JPanel chatArea = null;
     private UserListPanel userListPanel;
+
+    //yc73
+    //11/27/23
+    List<String> history = new ArrayList<String>(); 
+
     public ChatPanel(ICardControls controls){
         super(new BorderLayout(10, 10));
         JPanel wrapper = new JPanel();
@@ -93,8 +109,23 @@ public class ChatPanel extends JPanel {
                 e1.printStackTrace();
             }
         });
+
+        //yc73
+        //11/27/23
+        JButton saveButton = new JButton("Export Chat");
+        saveButton.addActionListener((event) ->  {
+            exportHistory();
+        });
+
+
+
         chatArea = content;
         input.add(button);
+        
+        //yc73
+        //11/27/23
+        input.add(saveButton);
+
         userListPanel = new UserListPanel(controls);
         this.add(userListPanel, BorderLayout.EAST);
         this.add(input, BorderLayout.SOUTH);
@@ -149,6 +180,11 @@ public class ChatPanel extends JPanel {
         userListPanel.clearUserList();
     }
     public void addText(String text) {
+        //yc73
+        //11/27/23
+        //recieved help from the professor during office hours
+        history.add(text);
+
         JPanel content = chatArea;
         // add message
 
@@ -173,4 +209,30 @@ public class ChatPanel extends JPanel {
         JScrollBar vertical = ((JScrollPane) chatArea.getParent().getParent()).getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
     }
+
+    public void exportHistory() {
+                try {
+                    String filename = JOptionPane.showInputDialog(new JFrame(), "Enter the file name that you want");
+                    if (filename != null && !filename.isEmpty()) {
+                        FileWriter fileWriter = new FileWriter(filename + ".txt");
+                        for(String i:history) {
+                            fileWriter.write("\n" + i);
+                        }
+                        fileWriter.close();
+                    } 
+                    
+                    else {
+                        // Handle empty or null filename input (optional)
+                        JOptionPane.showMessageDialog(new JFrame(), "Invalid file name.");
+                    }
+                    
+                } 
+                
+                catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(new JFrame(), "Error occurred while saving chat history.");
+                }
+
+        }
+
 }

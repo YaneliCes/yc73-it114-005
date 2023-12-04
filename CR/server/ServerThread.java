@@ -1,11 +1,14 @@
 package CR.server;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,6 +62,42 @@ public class ServerThread extends Thread {
             clientsMuted.remove(clientName);
         }
     }
+
+
+    //yc73
+    //11/28/23
+    //reads muted file
+    public void addMutedUsersFromFile(String fileName) {
+        try {
+            Scanner scanner = new Scanner(new File(fileName));
+            while (scanner.hasNextLine()) {
+                String mutedUsername = scanner.nextLine().trim();
+                if (!mutedUsername.isEmpty()) {
+                    mute(mutedUsername); //adds each username to the muted list
+                }
+            }
+        } 
+        
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //yc73
+    //11/28/23
+    //writes muted file
+    public void saveMutedList(String fileName) {
+        try (FileWriter fileWriter = new FileWriter(fileName)) {
+            for (String mutedUser : clientsMuted) {
+                fileWriter.write(mutedUser + "\n");
+            }
+        } 
+        
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     private void info(String message) {

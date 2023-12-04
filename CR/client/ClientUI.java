@@ -257,4 +257,12 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControls {
             chatPanel.addText("Joined room " + roomName);
         }
     }
+
+    //yc73
+    //11/27/23
+    @Override
+    public void onExport() {
+        chatPanel.exportHistory();
+    }
+
 }

@@ -7,7 +7,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import CR.common.Constants;
+
+//yc73
+//11/28/23
+import java.io.FileWriter;
 
 public class Room implements AutoCloseable {
 	private String name;
@@ -31,6 +38,10 @@ public class Room implements AutoCloseable {
 	//11/18/23
 	private final static String MUTE = "mute";
 	private final static String UNMUTE = "unmute";
+
+	//yc73
+	//11/28/23
+	private final static String SAVE_MUTED = "savemuted";
 
 	private static Logger logger = Logger.getLogger(Room.class.getName());
 
@@ -63,6 +74,11 @@ public class Room implements AutoCloseable {
 			sendConnectionStatus(client, true);
 			sendRoomJoined(client);
 			sendUserListToClient(client);
+
+			//yc73
+			//11/28/23
+			client.addMutedUsersFromFile(client.getClientName() + "MutedList.txt"); 
+
 		}
 	}
 
@@ -70,6 +86,11 @@ public class Room implements AutoCloseable {
 		if (!isRunning) {
 			return;
 		}
+
+		//yc73
+		//11/28/23
+		client.saveMutedList(client.getClientName() + "MutedList.txt");
+
 		clients.remove(client);
 		// we don't need to broadcast it to the server
 		// only to our own Room
@@ -128,7 +149,7 @@ public class Room implements AutoCloseable {
                     case FLIP:
                         int toss = (int)(Math.random()*2);
 						//JEditorPane being configured to "text/html" allows the html tags to be rendered and displayed correctly
-			            sendMessage(client, String.format("<font color='#7B68EE'>Flipped a coin and got %s", toss == 0 ? "heads" : "tails" + "</font>"));
+			            sendMessage(client, String.format("<font color='#7B68EE'>Flipped a coin and got %s </font>", toss == 0 ? "heads" : "tails" /*+ "</font>"*/));
 			            break;
 
                     //yc73
@@ -242,6 +263,22 @@ public class Room implements AutoCloseable {
 							break;
 						}
 
+						//yc73
+						//11/28/23
+						case SAVE_MUTED:
+					        try {
+								client.saveMutedList(client.getClientName() + "MutedList.txt");
+
+								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Your muted list has been saved.</font>");
+								
+								break;
+							} 
+									
+							catch (Exception e) {
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(new JFrame(), "Error occurred while saving mute list.");
+								break;
+							}
 
 					default:
 						wasCommand = false;

@@ -8,4 +8,8 @@ public interface ICardControls {
     void show(String cardName);
     void addPanel(String name, JPanel panel);
     void connect();
+
+    //yc72
+    //11/27/23
+    void onExport();
 }
