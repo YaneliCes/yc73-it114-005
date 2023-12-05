@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -71,9 +73,9 @@ public class ServerThread extends Thread {
         try {
             Scanner scanner = new Scanner(new File(fileName));
             while (scanner.hasNextLine()) {
-                String mutedUsername = scanner.nextLine().trim();
-                if (!mutedUsername.isEmpty()) {
-                    mute(mutedUsername); //adds each username to the muted list
+                String mutedUser = scanner.nextLine().trim();
+                if (!mutedUser.isEmpty()) {
+                    mute(mutedUser); //adds each username to the muted list
                 }
             }
         } 
@@ -91,6 +93,46 @@ public class ServerThread extends Thread {
             for (String mutedUser : clientsMuted) {
                 fileWriter.write(mutedUser + "\n");
             }
+        } 
+        
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //yc73
+    //12/4/23
+    //updates file when user is unmuted (removes their name)
+    public void removeMutedUsersFromFile (String clientName, String fileName) {
+        //List<String> mutedUsersFromFile = new ArrayList<>();
+        
+        try {
+            //help from:
+            //https://howtodoinjava.com/java/io/java-append-to-file/
+            //https://howtodoinjava.com/java8/read-file-line-by-line/
+            List<String> lines = Files.readAllLines(Paths.get(fileName));
+            lines.removeIf(line -> line.trim().equals(clientName));
+            Files.write(Paths.get(fileName), lines);
+
+            /*
+            Scanner scanner = new Scanner(new File(fileName));
+
+            //reads the existing muted users from the file
+            while (scanner.hasNextLine()) {
+                String mutedUser = scanner.nextLine().trim();
+                if (!mutedUser.isEmpty() && !mutedUser.equals(clientName)) {
+                    mutedUsersFromFile.add(mutedUser);
+                }
+            }
+            scanner.close();
+
+            FileWriter fileWriter = new FileWriter(fileName);
+            for (String mutedUser : clientsMuted) {
+                fileWriter.write(mutedUser + "\n");
+            }
+            fileWriter.close();
+            */
         } 
         
         catch (IOException e) {
@@ -221,6 +263,18 @@ public class ServerThread extends Thread {
             return true;// true since it's likely pending being opened
         }
     }
+
+
+    //yc73
+    //12/4/23
+    //got help from sajid
+    private void sendMuteList() {
+        Payload p = new Payload();
+        p.setPayloadType(PayloadType.MUTE_LIST);
+        p.setMessage(String.join(",", clientsMuted));
+        send(p);
+    }
+
 
     // end send methods
     @Override

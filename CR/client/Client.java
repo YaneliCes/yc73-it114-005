@@ -5,6 +5,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+//yc73
+//12/4/23
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +27,11 @@ public enum Client {
     private Thread fromServerThread;
     private String clientName = "";
     private static Logger logger = Logger.getLogger(Client.class.getName());
+
+    //yc73
+    //12/4/23
+    protected List<String> clientMutedList = new ArrayList<String>();
+
     private static IClientEvents events;
 
     public boolean isConnected() {
@@ -181,6 +190,14 @@ public enum Client {
             case JOIN_ROOM:
                 events.onRoomJoin(p.getMessage());
                 break;
+
+            //yc73
+            //12/4/23
+            case MUTE_LIST:
+                clientMutedList.clear();
+                
+                break;
+
             default:
                 logger.log(Level.WARNING, "Unhandled payload type");
                 break;

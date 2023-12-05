@@ -9,7 +9,6 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +34,7 @@ import CR.client.ICardControls;
 
 //yc73
 //11/27/23
-import java.io.File;
-import java.io.IOException;
+//import java.io.File;
 import java.io.FileWriter;
 
 public class ChatPanel extends JPanel {
@@ -138,6 +136,13 @@ public class ChatPanel extends JPanel {
                 if (chatArea.isVisible()) {
                     chatArea.revalidate();
                     chatArea.repaint();
+
+                    //yc73
+                    //12/4/23
+                    //fixing scroll issue
+                    JScrollBar vertical = ((JScrollPane) chatArea.getParent().getParent()).getVerticalScrollBar();
+                    vertical.setValue(vertical.getMaximum());
+
                 }
             }
 
@@ -222,7 +227,7 @@ public class ChatPanel extends JPanel {
                     } 
                     
                     else {
-                        // Handle empty or null filename input (optional)
+                        //handles when client inputs an empty or null filename
                         JOptionPane.showMessageDialog(new JFrame(), "Invalid file name.");
                     }
                     

@@ -12,9 +12,7 @@ import javax.swing.JOptionPane;
 
 import CR.common.Constants;
 
-//yc73
-//11/28/23
-import java.io.FileWriter;
+//import java.io.FileWriter;
 
 public class Room implements AutoCloseable {
 	private String name;
@@ -199,6 +197,8 @@ public class Room implements AutoCloseable {
 								//updates the mute lsit in ServerThread
 								client.mute(usersToMute);
 
+								client.saveMutedList(client.getClientName() + "MutedList.txt");
+
 								//created to be used to send a private message to the muted user
 								List<String> mutedUsersList = new ArrayList<>();
 								mutedUsersList.add(usersToMute);
@@ -236,6 +236,8 @@ public class Room implements AutoCloseable {
 							if (isValidUsername(usersToUnmute)) {
 								//updates the mute list in ServerThread
 								client.unmute(usersToUnmute);
+
+								client.removeMutedUsersFromFile(usersToUnmute, client.getClientName() + "MutedList.txt");
 								
 								//created to be used to send a private message to the muted user
 								List<String> unmutedUsersList = new ArrayList<>();
