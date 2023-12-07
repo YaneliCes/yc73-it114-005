@@ -1,7 +1,7 @@
 package CR.client.views;
 
 import java.awt.BorderLayout;
-
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ContainerEvent;
@@ -67,10 +67,7 @@ public class UserListPanel extends JPanel {
         logger.log(Level.INFO, "Adding user to list: " + clientName);
         JPanel content = userListArea;
         logger.log(Level.INFO, "Userlist: " + content.getSize());
-        //yc73
-        //12/4/23
-        //changed to html
-        JEditorPane textContainer = new JEditorPane("text/html", clientName);
+        JEditorPane textContainer = new JEditorPane("text/plain", clientName);
         textContainer.setName(clientId + "");
         // sizes the panel to attempt to take up the width of the container
         // and expand in height based on word wrapping
@@ -103,4 +100,19 @@ public class UserListPanel extends JPanel {
             userListArea.remove(c);
         }
     }
+
+    //yc73
+    //12/5/23
+    protected void onMuted(String userMuteStatus, Long Id) {
+        Component[] cs = userListArea.getComponents();
+        for (Component c : cs) {
+            if (userMuteStatus.equals("mute") && c.getName().trim().equals(""+Id)){
+                c.setForeground(Color.GRAY);
+            }
+            else if (userMuteStatus.equals("unmute") && c.getName().trim().equals(""+Id)){
+                c.setForeground(Color.BLACK);
+            }
+       }
+    }
+
 }

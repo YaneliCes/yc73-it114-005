@@ -268,15 +268,33 @@ public class ServerThread extends Thread {
     //yc73
     //12/4/23
     //got help from sajid
-    private void sendMuteList() {
+    public void sendMuteList() {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.MUTE_LIST);
         p.setMessage(String.join(",", clientsMuted));
         send(p);
     }
 
-
     // end send methods
+
+    //yc73
+    //12/6/23
+    public void sendMuteStatus() {
+        Payload p = new Payload();
+        p.setPayloadType(PayloadType.MUTE);
+        p.setMessage("");
+        send(p);
+    }
+
+    //yc73
+    //12/6/23
+    public void sendUnmuteStatus() {
+        Payload p = new Payload();
+        p.setPayloadType(PayloadType.UNMUTE);
+        p.setMessage("");
+        send(p);
+    }
+
     @Override
     public void run() {
         info("Thread starting");
@@ -309,6 +327,14 @@ public class ServerThread extends Thread {
         switch (p.getPayloadType()) {
             case CONNECT:
                 setClientName(p.getClientName());
+
+                //yc73
+                //11/28/23
+                addMutedUsersFromFile(this.getClientName() + "MutedList.txt"); 
+                //yc73
+                //12/6/23
+                sendMuteList();
+
                 break;
             case DISCONNECT:
                 Room.disconnectClient(this, getCurrentRoom());

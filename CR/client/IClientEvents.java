@@ -61,4 +61,9 @@ public interface IClientEvents {
      * @param roomName
      */
     void onRoomJoin(String roomName);
+
+    //yc73
+    //12/5/23
+    void onMuted(String userMuteStatus, Long Id);
+
 }

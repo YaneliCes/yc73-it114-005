@@ -108,18 +108,15 @@ public class ChatPanel extends JPanel {
             }
         });
 
+        chatArea = content;
+        input.add(button);
+
         //yc73
         //11/27/23
         JButton saveButton = new JButton("Export Chat");
         saveButton.addActionListener((event) ->  {
             exportHistory();
         });
-
-
-
-        chatArea = content;
-        input.add(button);
-        
         //yc73
         //11/27/23
         input.add(saveButton);
@@ -140,6 +137,13 @@ public class ChatPanel extends JPanel {
                     //yc73
                     //12/4/23
                     //fixing scroll issue
+                    //worked in class with toegel
+                    try {
+                        Thread.sleep(10);
+                    }
+                    catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                     JScrollBar vertical = ((JScrollPane) chatArea.getParent().getParent()).getVerticalScrollBar();
                     vertical.setValue(vertical.getMaximum());
 
@@ -239,5 +243,11 @@ public class ChatPanel extends JPanel {
                 }
 
         }
+
+    //yc73
+    //12/5/23
+    public void onMuted(String userMuteStatus, Long Id) {
+        userListPanel.onMuted(userMuteStatus, Id);
+    }
 
 }

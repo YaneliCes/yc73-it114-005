@@ -265,4 +265,11 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControls {
         chatPanel.exportHistory();
     }
 
+    //yc73
+    //12/5/23
+    @Override
+    public void onMuted(String userMuteStatus, Long Id) {
+        chatPanel.onMuted(userMuteStatus, Id);
+    }
+
 }

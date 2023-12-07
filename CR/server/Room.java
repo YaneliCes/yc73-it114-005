@@ -72,11 +72,6 @@ public class Room implements AutoCloseable {
 			sendConnectionStatus(client, true);
 			sendRoomJoined(client);
 			sendUserListToClient(client);
-
-			//yc73
-			//11/28/23
-			client.addMutedUsersFromFile(client.getClientName() + "MutedList.txt"); 
-
 		}
 	}
 
@@ -197,6 +192,16 @@ public class Room implements AutoCloseable {
 								//updates the mute lsit in ServerThread
 								client.mute(usersToMute);
 
+								//yc73
+								//12/5/23
+								client.sendMuteList();
+
+								//yc73
+								//12/6/23
+								client.sendMuteStatus();
+
+								//yc73
+								//11/28/23
 								client.saveMutedList(client.getClientName() + "MutedList.txt");
 
 								//created to be used to send a private message to the muted user
@@ -237,6 +242,16 @@ public class Room implements AutoCloseable {
 								//updates the mute list in ServerThread
 								client.unmute(usersToUnmute);
 
+								//yc73
+								//12/5/23
+								client.sendMuteList();
+
+								//yc73
+								//12/6/23
+								client.sendUnmuteStatus();
+
+								//yc73
+								//11/28/23
 								client.removeMutedUsersFromFile(usersToUnmute, client.getClientName() + "MutedList.txt");
 								
 								//created to be used to send a private message to the muted user
