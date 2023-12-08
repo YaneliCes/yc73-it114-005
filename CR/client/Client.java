@@ -237,6 +237,12 @@ public enum Client {
                     e.onMessageReceive(p.getClientId(), p.getMessage());
                 });
 
+                //yc73
+                //12/6/23
+                events.forEach(e -> {
+                    e.messageHighlight(p.getClientId());
+                });
+
                 break;
             case CLIENT_ID:
                 if (myClientId == Constants.DEFAULT_CLIENT_ID) {

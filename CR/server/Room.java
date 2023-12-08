@@ -79,11 +79,6 @@ public class Room implements AutoCloseable {
 		if (!isRunning) {
 			return;
 		}
-
-		//yc73
-		//11/28/23
-		client.saveMutedList(client.getClientName() + "MutedList.txt");
-
 		clients.remove(client);
 		// we don't need to broadcast it to the server
 		// only to our own Room
@@ -189,8 +184,12 @@ public class Room implements AutoCloseable {
 							String usersToMute = comm2[1];
 
 							if (isValidUsername(usersToMute)) {
-								//updates the mute lsit in ServerThread
+								//updates the mute list in ServerThread
 								client.mute(usersToMute);
+
+								//yc73
+								//11/28/23
+								client.saveMutedList(client.getClientName() + "MutedList.txt");
 
 								//yc73
 								//12/5/23
@@ -199,10 +198,6 @@ public class Room implements AutoCloseable {
 								//yc73
 								//12/6/23
 								client.sendMuteStatus();
-
-								//yc73
-								//11/28/23
-								client.saveMutedList(client.getClientName() + "MutedList.txt");
 
 								//created to be used to send a private message to the muted user
 								List<String> mutedUsersList = new ArrayList<>();
@@ -243,16 +238,16 @@ public class Room implements AutoCloseable {
 								client.unmute(usersToUnmute);
 
 								//yc73
+								//11/28/23
+								client.removeMutedUsersFromFile(usersToUnmute, client.getClientName() + "MutedList.txt");
+
+								//yc73
 								//12/5/23
 								client.sendMuteList();
 
 								//yc73
 								//12/6/23
 								client.sendUnmuteStatus();
-
-								//yc73
-								//11/28/23
-								client.removeMutedUsersFromFile(usersToUnmute, client.getClientName() + "MutedList.txt");
 								
 								//created to be used to send a private message to the muted user
 								List<String> unmutedUsersList = new ArrayList<>();
@@ -315,16 +310,18 @@ public class Room implements AutoCloseable {
 				if (isValidUsername(targetUsername)) {
 					//if the username exists, it considers the message as a private message
 					wasCommand = true;
+
 					//creates a new empty list to store usernames and keep track of who the private message is being sent to
 					List<String> pmClients = new ArrayList<String>();
+
 					//the username is added to the list 'pmClients'
 					pmClients.add(targetUsername);
-					//calls the 'sendPrivateMessage' method to actually send the message to the correct user
 
 					//sends to sender
 					client.sendMessage(client.getClientId(), "<font color='#5f5f5f'>(Whispered) </font>" + replaceMessage(message));
 
 					//sends to client
+					//calls the 'sendPrivateMessage' method to actually send the message to the correct user
 					sendPrivateMessage(client, pmClients, "<font color='#5f5f5f'>(Whisper) </font>" + message);
 
 				} else {

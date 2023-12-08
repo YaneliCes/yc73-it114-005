@@ -115,4 +115,18 @@ public class UserListPanel extends JPanel {
        }
     }
 
+    //yc73
+    //12/6/23
+    protected void messageHighlight(Long Id) {
+        Component[] cs = userListArea.getComponents();
+        for (Component c :cs) {
+            if (c.getName().trim().equals(""+Id)){
+                c.setForeground(Color.ORANGE);
+            }
+            else {
+                c.setForeground(Color.BLACK);
+            }
+        }
+    }
+
 }

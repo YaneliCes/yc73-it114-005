@@ -250,4 +250,10 @@ public class ChatPanel extends JPanel {
         userListPanel.onMuted(userMuteStatus, Id);
     }
 
+    //yc73
+    //12/6/23
+    public void messageHighlight(Long Id) {
+        userListPanel.messageHighlight(Id);
+    }
+
 }

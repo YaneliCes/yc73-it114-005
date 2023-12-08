@@ -279,6 +279,7 @@ public class ServerThread extends Thread {
 
     //yc73
     //12/6/23
+    //got help from sajid
     public void sendMuteStatus() {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.MUTE);
@@ -331,12 +332,18 @@ public class ServerThread extends Thread {
                 //yc73
                 //11/28/23
                 addMutedUsersFromFile(this.getClientName() + "MutedList.txt"); 
+
                 //yc73
                 //12/6/23
                 sendMuteList();
 
                 break;
             case DISCONNECT:
+
+                //yc73
+                //11/28/23
+                saveMutedList(this.getClientName() + "MutedList.txt");
+
                 Room.disconnectClient(this, getCurrentRoom());
                 break;
             case MESSAGE:

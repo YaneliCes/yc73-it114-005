@@ -66,4 +66,8 @@ public interface IClientEvents {
     //12/5/23
     void onMuted(String userMuteStatus, Long Id);
 
+    //yc73
+    //12/6/23
+    void messageHighlight(Long Id);
+
 }
