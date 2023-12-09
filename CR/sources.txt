@@ -15,6 +15,7 @@
 ./client/ClientUI.java
 ./client/views/UserInputPanel.java
 ./client/views/Menu.java
+./client/views/TipsPanel.java
 ./client/views/ChatPanel.java
 ./client/views/RoomsPanel.java
 ./client/views/ConnectionPanel.java

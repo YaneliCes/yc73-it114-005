@@ -46,6 +46,10 @@ public class ChatPanel extends JPanel {
     //11/27/23
     List<String> history = new ArrayList<String>(); 
 
+    //yc73
+    //12/8/23
+    private JTextField textValue;
+
     public ChatPanel(ICardControls controls){
         super(new BorderLayout(10, 10));
         JPanel wrapper = new JPanel();
@@ -65,7 +69,12 @@ public class ChatPanel extends JPanel {
 
         JPanel input = new JPanel();
         input.setLayout(new BoxLayout(input, BoxLayout.X_AXIS));
-        JTextField textValue = new JTextField();
+
+        //yc73
+        //12/8/23
+        textValue = new JTextField(); //og line:JTextField textValue = new JTextField();
+
+
         input.add(textValue);
         JButton button = new JButton("Send");
         // lets us submit with the enter key instead of just the button click
@@ -113,13 +122,13 @@ public class ChatPanel extends JPanel {
 
         //yc73
         //11/27/23
-        JButton saveButton = new JButton("Export Chat");
-        saveButton.addActionListener((event) ->  {
-            exportHistory();
-        });
-        //yc73
-        //11/27/23
-        input.add(saveButton);
+        //moved to menu
+            // JButton saveButton = new JButton("Export Chat");
+            // saveButton.addActionListener((event) ->  {
+            //     exportHistory();
+            // });
+            // input.add(saveButton);
+        
 
         userListPanel = new UserListPanel(controls);
         this.add(userListPanel, BorderLayout.EAST);
@@ -220,29 +229,35 @@ public class ChatPanel extends JPanel {
     }
 
     public void exportHistory() {
-                try {
-                    String filename = JOptionPane.showInputDialog(new JFrame(), "Enter the file name that you want");
-                    if (filename != null && !filename.isEmpty()) {
-                        FileWriter fileWriter = new FileWriter(filename + ".txt");
-                        for(String i:history) {
-                            fileWriter.write("\n" + i);
-                        }
-                        fileWriter.close();
-                    } 
-                    
-                    else {
-                        //handles when client inputs an empty or null filename
-                        JOptionPane.showMessageDialog(new JFrame(), "Invalid file name.");
-                    }
-                    
-                } 
+        while (true) {
+            try {
+                String filename = JOptionPane.showInputDialog(new JFrame(), "Enter the file name that you want:");
                 
-                catch (Exception e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(new JFrame(), "Error occurred while saving chat history.");
+                if (filename == null) {
+                    JOptionPane.showMessageDialog(new JFrame(), "Export canceled.");
+                    break;
                 }
 
+                if (!filename.isEmpty() && !filename.isBlank() && !filename.startsWith(" ") && !filename.endsWith(" ")) {
+                    FileWriter fileWriter = new FileWriter(filename + ".txt");
+                    for (String i : history) {
+                        fileWriter.write("\n" + i);
+                    }
+                    fileWriter.close();
+                    break;
+                } 
+
+                else {
+                    JOptionPane.showMessageDialog(new JFrame(), "Invalid filename.");
+                }
+            
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(new JFrame(), "Error occurred while saving chat history.");
+            }
         }
+
+    }
 
     //yc73
     //12/5/23
@@ -254,6 +269,30 @@ public class ChatPanel extends JPanel {
     //12/6/23
     public void messageHighlight(Long Id) {
         userListPanel.messageHighlight(Id);
+    }
+
+    //yc73
+    //12/8/23
+    public void appendRollToInput(String message) {
+        textValue.setText(textValue.getText() + message);
+    }
+
+    //yc73
+    //12/8/23
+    public void appendMuteToInput(String message) {
+        textValue.setText(textValue.getText() + message);
+    }
+
+    //yc73
+    //12/8/23
+    public void appendUnmuteToInput(String message) {
+        textValue.setText(textValue.getText() + message);
+    }
+
+    //yc73
+    //12/8/23
+    public void appendPMToInput(String message) {
+        textValue.setText(textValue.getText() + message);
     }
 
 }

@@ -342,7 +342,7 @@ public class ServerThread extends Thread {
 
                 //yc73
                 //11/28/23
-                saveMutedList(this.getClientName() + "MutedList.txt");
+                //saveMutedList(this.getClientName() + "MutedList.txt");
 
                 Room.disconnectClient(this, getCurrentRoom());
                 break;

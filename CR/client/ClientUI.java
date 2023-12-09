@@ -25,6 +25,10 @@ import CR.client.views.RoomsPanel;
 import CR.client.views.UserInputPanel;
 import CR.common.Constants;
 
+//yc73
+//12/7/23
+import CR.client.views.TipsPanel;
+
 public class ClientUI extends JFrame implements IClientEvents, ICardControls {
     CardLayout card = null;// accessible so we can call next() and previous()
     Container container;// accessible to be passed to card methods
@@ -42,6 +46,10 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControls {
     private UserInputPanel inputPanel;
     private RoomsPanel roomsPanel;
     private ChatPanel chatPanel;
+
+    //yc73
+    //12/7/23
+    private TipsPanel tipsPanel;
 
     public ClientUI(String title) {
         super(title);// call the parent's constructor
@@ -77,6 +85,13 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControls {
         chatPanel = new ChatPanel(this);
         
         roomsPanel = new RoomsPanel(this);
+
+        //yc73
+        //12/7/23
+        tipsPanel = new TipsPanel(this);
+        addPanel(Card.TIPS.name(), tipsPanel);
+        revalidate();
+        repaint();
 
 
         // https://stackoverflow.com/a/9093526
@@ -277,6 +292,46 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControls {
     @Override
     public void messageHighlight(Long Id) {
         chatPanel.messageHighlight(Id);
+    }
+
+    //yc73
+    //12/8/23
+    @Override
+    public void sendFlip() {
+        try {
+            Client.INSTANCE.sendMessage("/flip");
+        } 
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //yc73
+    //12/8/23
+    @Override
+    public void appendRoll(String message) {
+            chatPanel.appendRollToInput(message);
+    }
+
+    //yc73
+    //12/8/23
+    @Override
+    public void appendMute(String message) {
+            chatPanel.appendMuteToInput(message);
+    }
+
+    //yc73
+    //12/8/23
+    @Override
+    public void appendUnmute(String message) {
+            chatPanel.appendUnmuteToInput(message);
+    }
+
+    //yc73
+    //12/8/23
+    @Override
+    public void appendPM(String message) {
+            chatPanel.appendPMToInput(message);
     }
 
 }
