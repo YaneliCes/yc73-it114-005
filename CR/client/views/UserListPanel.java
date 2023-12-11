@@ -103,7 +103,7 @@ public class UserListPanel extends JPanel {
 
     //yc73
     //12/5/23
-    protected void onMuted(String userMuteStatus, Long Id) {
+    protected void onMutedUserList(String userMuteStatus, Long Id) {
         Component[] cs = userListArea.getComponents();
         for (Component c : cs) {
             if (userMuteStatus.equals("mute") && c.getName().trim().equals(""+Id)){

@@ -155,7 +155,7 @@ public enum Client {
 
                         //yc73
                         //12/6/23
-                        onMuted("mute");
+                        onMutedStatus("mute");
 
                     }
                     logger.info("listenForServerPayload() loop exited");
@@ -293,13 +293,13 @@ public enum Client {
             //yc73
             //12/6/23
             case MUTE:
-                onMuted("mute");
+                onMutedStatus("mute");
                 break;
 
             //yc73
             //12/6/23
             case UNMUTE:
-                onMuted("unmute");
+                onMutedStatus("unmute");
                 break;
 
             default:
@@ -353,19 +353,20 @@ public enum Client {
 
     //yc73
     //12/5/23
-    private void onMuted(String userMuteStatus) {
+    //got help from sajid & this website: https://www.geeksforgeeks.org/how-to-iterate-through-hashtable-in-java/
+    private void onMutedStatus(String userMuteStatus) {
         Set<Entry<Long, User> > userSet = userList.entrySet();
 
         for (Entry<Long, User> userInfo : userSet) {
             if(userMuteStatus.equals("mute") && clientMutedList.indexOf(userInfo.getValue().getClientName()) > -1) {
                 events.forEach(e -> {
-                    e.onMuted(userMuteStatus, userInfo.getValue().getClientId());
+                    e.onMutedUserInfo(userMuteStatus, userInfo.getValue().getClientId());
                 });
             }
 
             else if(userMuteStatus.equals("unmute") && !clientMutedList.contains(userInfo.getValue().getClientName())) {
                 events.forEach(e -> {
-                    e.onMuted(userMuteStatus, userInfo.getValue().getClientId());
+                    e.onMutedUserInfo(userMuteStatus, userInfo.getValue().getClientId());
                 });
             }
  

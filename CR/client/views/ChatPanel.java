@@ -10,8 +10,6 @@ import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,11 +38,7 @@ import java.io.FileWriter;
 public class ChatPanel extends JPanel {
     private static Logger logger = Logger.getLogger(ChatPanel.class.getName());
     private JPanel chatArea = null;
-    private UserListPanel userListPanel;
-
-    //yc73
-    //11/27/23
-    List<String> history = new ArrayList<String>(); 
+    private UserListPanel userListPanel; 
 
     //yc73
     //12/8/23
@@ -120,16 +114,6 @@ public class ChatPanel extends JPanel {
         chatArea = content;
         input.add(button);
 
-        //yc73
-        //11/27/23
-        //moved to menu
-            // JButton saveButton = new JButton("Export Chat");
-            // saveButton.addActionListener((event) ->  {
-            //     exportHistory();
-            // });
-            // input.add(saveButton);
-        
-
         userListPanel = new UserListPanel(controls);
         this.add(userListPanel, BorderLayout.EAST);
         this.add(input, BorderLayout.SOUTH);
@@ -198,10 +182,6 @@ public class ChatPanel extends JPanel {
         userListPanel.clearUserList();
     }
     public void addText(String text) {
-        //yc73
-        //11/27/23
-        //recieved help from the professor during office hours
-        history.add(text);
 
         JPanel content = chatArea;
         // add message
@@ -228,7 +208,10 @@ public class ChatPanel extends JPanel {
         vertical.setValue(vertical.getMaximum());
     }
 
+    //yc73
+    //11/27/23
     public void exportHistory() {
+        Component[] history = chatArea.getComponents();
         while (true) {
             try {
                 String filename = JOptionPane.showInputDialog(new JFrame(), "Enter the file name that you want:");
@@ -239,11 +222,13 @@ public class ChatPanel extends JPanel {
                 }
 
                 if (!filename.isEmpty() && !filename.isBlank() && !filename.startsWith(" ") && !filename.endsWith(" ")) {
-                    FileWriter fileWriter = new FileWriter(filename + ".txt");
-                    for (String i : history) {
-                        fileWriter.write("\n" + i);
+                    //help from professor during office hours
+                    FileWriter fileWriter = new FileWriter(filename + ".html");
+                    for (Component text : history) {
+                        fileWriter.write("<br>" + ((JEditorPane) text).getText());
                     }
                     fileWriter.close();
+                    JOptionPane.showMessageDialog(new JFrame(), "Export complete.");
                     break;
                 } 
 
@@ -261,8 +246,8 @@ public class ChatPanel extends JPanel {
 
     //yc73
     //12/5/23
-    public void onMuted(String userMuteStatus, Long Id) {
-        userListPanel.onMuted(userMuteStatus, Id);
+    public void onMutedSendInfo(String userMuteStatus, Long Id) {
+        userListPanel.onMutedUserList(userMuteStatus, Id);
     }
 
     //yc73

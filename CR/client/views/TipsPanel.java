@@ -28,8 +28,7 @@ public class TipsPanel extends JPanel {
 
         JButton back = new JButton("Go Back");
         back.addActionListener((event) -> {
-            controls.previous();
-            controls.previous();
+            controls.show("CHAT");
         });
 
         JPanel buttonPanel = new JPanel(new BorderLayout());

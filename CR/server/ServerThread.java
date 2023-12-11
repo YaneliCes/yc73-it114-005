@@ -114,25 +114,6 @@ public class ServerThread extends Thread {
             List<String> lines = Files.readAllLines(Paths.get(fileName));
             lines.removeIf(line -> line.trim().equals(clientName));
             Files.write(Paths.get(fileName), lines);
-
-            /*
-            Scanner scanner = new Scanner(new File(fileName));
-
-            //reads the existing muted users from the file
-            while (scanner.hasNextLine()) {
-                String mutedUser = scanner.nextLine().trim();
-                if (!mutedUser.isEmpty() && !mutedUser.equals(clientName)) {
-                    mutedUsersFromFile.add(mutedUser);
-                }
-            }
-            scanner.close();
-
-            FileWriter fileWriter = new FileWriter(fileName);
-            for (String mutedUser : clientsMuted) {
-                fileWriter.write(mutedUser + "\n");
-            }
-            fileWriter.close();
-            */
         } 
         
         catch (IOException e) {
@@ -289,6 +270,7 @@ public class ServerThread extends Thread {
 
     //yc73
     //12/6/23
+    //got help from sajid
     public void sendUnmuteStatus() {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.UNMUTE);
@@ -339,11 +321,6 @@ public class ServerThread extends Thread {
 
                 break;
             case DISCONNECT:
-
-                //yc73
-                //11/28/23
-                //saveMutedList(this.getClientName() + "MutedList.txt");
-
                 Room.disconnectClient(this, getCurrentRoom());
                 break;
             case MESSAGE:
