@@ -1,11 +1,16 @@
 package CR.server;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,6 +64,63 @@ public class ServerThread extends Thread {
             clientsMuted.remove(clientName);
         }
     }
+
+
+    //yc73
+    //11/28/23
+    //reads muted file
+    public void addMutedUsersFromFile(String fileName) {
+        try {
+            Scanner scanner = new Scanner(new File(fileName));
+            while (scanner.hasNextLine()) {
+                String mutedUser = scanner.nextLine().trim();
+                if (!mutedUser.isEmpty()) {
+                    mute(mutedUser); //adds each username to the muted list
+                }
+            }
+        } 
+        
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //yc73
+    //11/28/23
+    //writes muted file
+    public void saveMutedList(String fileName) {
+        try (FileWriter fileWriter = new FileWriter(fileName)) {
+            for (String mutedUser : clientsMuted) {
+                fileWriter.write(mutedUser + "\n");
+            }
+        } 
+        
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //yc73
+    //12/4/23
+    //updates file when user is unmuted (removes their name)
+    public void removeMutedUsersFromFile (String clientName, String fileName) {
+        //List<String> mutedUsersFromFile = new ArrayList<>();
+        
+        try {
+            //help from:
+            //https://howtodoinjava.com/java/io/java-append-to-file/
+            //https://howtodoinjava.com/java8/read-file-line-by-line/
+            List<String> lines = Files.readAllLines(Paths.get(fileName));
+            lines.removeIf(line -> line.trim().equals(clientName));
+            Files.write(Paths.get(fileName), lines);
+        } 
+        
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     private void info(String message) {
@@ -183,7 +245,39 @@ public class ServerThread extends Thread {
         }
     }
 
+
+    //yc73
+    //12/4/23
+    //got help from sajid
+    public void sendMuteList() {
+        Payload p = new Payload();
+        p.setPayloadType(PayloadType.MUTE_LIST);
+        p.setMessage(String.join(",", clientsMuted));
+        send(p);
+    }
+
     // end send methods
+
+    //yc73
+    //12/6/23
+    //got help from sajid
+    public void sendMuteStatus() {
+        Payload p = new Payload();
+        p.setPayloadType(PayloadType.MUTE);
+        p.setMessage("");
+        send(p);
+    }
+
+    //yc73
+    //12/6/23
+    //got help from sajid
+    public void sendUnmuteStatus() {
+        Payload p = new Payload();
+        p.setPayloadType(PayloadType.UNMUTE);
+        p.setMessage("");
+        send(p);
+    }
+
     @Override
     public void run() {
         info("Thread starting");
@@ -216,6 +310,15 @@ public class ServerThread extends Thread {
         switch (p.getPayloadType()) {
             case CONNECT:
                 setClientName(p.getClientName());
+
+                //yc73
+                //11/28/23
+                addMutedUsersFromFile(this.getClientName() + "MutedList.txt"); 
+
+                //yc73
+                //12/6/23
+                sendMuteList();
+
                 break;
             case DISCONNECT:
                 Room.disconnectClient(this, getCurrentRoom());

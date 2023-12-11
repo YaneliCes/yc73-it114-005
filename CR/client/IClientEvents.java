@@ -39,7 +39,7 @@ public interface IClientEvents {
      * @param clientName
      */
     void onSyncClient(long id, String clientName);
-
+//mute
     /**
      * Triggered when we need to clear the user list, likely during a room
      * transition
@@ -61,4 +61,13 @@ public interface IClientEvents {
      * @param roomName
      */
     void onRoomJoin(String roomName);
+
+    //yc73
+    //12/5/23
+    void onMutedUserInfo(String userMuteStatus, Long Id);
+
+    //yc73
+    //12/6/23
+    void messageHighlight(Long Id);
+
 }

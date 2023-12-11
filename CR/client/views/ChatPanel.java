@@ -17,6 +17,8 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -28,10 +30,20 @@ import CR.client.Client;
 import CR.client.ClientUtils;
 import CR.client.ICardControls;
 
+//yc73
+//11/27/23
+//import java.io.File;
+import java.io.FileWriter;
+
 public class ChatPanel extends JPanel {
     private static Logger logger = Logger.getLogger(ChatPanel.class.getName());
     private JPanel chatArea = null;
-    private UserListPanel userListPanel;
+    private UserListPanel userListPanel; 
+
+    //yc73
+    //12/8/23
+    private JTextField textValue;
+
     public ChatPanel(ICardControls controls){
         super(new BorderLayout(10, 10));
         JPanel wrapper = new JPanel();
@@ -51,7 +63,12 @@ public class ChatPanel extends JPanel {
 
         JPanel input = new JPanel();
         input.setLayout(new BoxLayout(input, BoxLayout.X_AXIS));
-        JTextField textValue = new JTextField();
+
+        //yc73
+        //12/8/23
+        textValue = new JTextField(); //og line:JTextField textValue = new JTextField();
+
+
         input.add(textValue);
         JButton button = new JButton("Send");
         // lets us submit with the enter key instead of just the button click
@@ -93,8 +110,10 @@ public class ChatPanel extends JPanel {
                 e1.printStackTrace();
             }
         });
+
         chatArea = content;
         input.add(button);
+
         userListPanel = new UserListPanel(controls);
         this.add(userListPanel, BorderLayout.EAST);
         this.add(input, BorderLayout.SOUTH);
@@ -107,6 +126,20 @@ public class ChatPanel extends JPanel {
                 if (chatArea.isVisible()) {
                     chatArea.revalidate();
                     chatArea.repaint();
+
+                    //yc73
+                    //12/4/23
+                    //fixing scroll issue
+                    //worked in class with toegel
+                    try {
+                        Thread.sleep(10);
+                    }
+                    catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    JScrollBar vertical = ((JScrollPane) chatArea.getParent().getParent()).getVerticalScrollBar();
+                    vertical.setValue(vertical.getMaximum());
+
                 }
             }
 
@@ -149,6 +182,7 @@ public class ChatPanel extends JPanel {
         userListPanel.clearUserList();
     }
     public void addText(String text) {
+
         JPanel content = chatArea;
         // add message
 
@@ -173,4 +207,77 @@ public class ChatPanel extends JPanel {
         JScrollBar vertical = ((JScrollPane) chatArea.getParent().getParent()).getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
     }
+
+    //yc73
+    //11/27/23
+    public void exportHistory() {
+        Component[] history = chatArea.getComponents();
+        while (true) {
+            try {
+                String filename = JOptionPane.showInputDialog(new JFrame(), "Enter the file name that you want:");
+                
+                if (filename == null) {
+                    JOptionPane.showMessageDialog(new JFrame(), "Export canceled.");
+                    break;
+                }
+
+                if (!filename.isEmpty() && !filename.isBlank() && !filename.startsWith(" ") && !filename.endsWith(" ")) {
+                    //help from professor during office hours
+                    FileWriter fileWriter = new FileWriter(filename + ".html");
+                    for (Component text : history) {
+                        fileWriter.write("<br>" + ((JEditorPane) text).getText());
+                    }
+                    fileWriter.close();
+                    JOptionPane.showMessageDialog(new JFrame(), "Export complete.");
+                    break;
+                } 
+
+                else {
+                    JOptionPane.showMessageDialog(new JFrame(), "Invalid filename.");
+                }
+            
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(new JFrame(), "Error occurred while saving chat history.");
+            }
+        }
+
+    }
+
+    //yc73
+    //12/5/23
+    public void onMutedSendInfo(String userMuteStatus, Long Id) {
+        userListPanel.onMutedUserList(userMuteStatus, Id);
+    }
+
+    //yc73
+    //12/6/23
+    public void messageHighlight(Long Id) {
+        userListPanel.messageHighlight(Id);
+    }
+
+    //yc73
+    //12/8/23
+    public void appendRollToInput(String message) {
+        textValue.setText(textValue.getText() + message);
+    }
+
+    //yc73
+    //12/8/23
+    public void appendMuteToInput(String message) {
+        textValue.setText(textValue.getText() + message);
+    }
+
+    //yc73
+    //12/8/23
+    public void appendUnmuteToInput(String message) {
+        textValue.setText(textValue.getText() + message);
+    }
+
+    //yc73
+    //12/8/23
+    public void appendPMToInput(String message) {
+        textValue.setText(textValue.getText() + message);
+    }
+
 }

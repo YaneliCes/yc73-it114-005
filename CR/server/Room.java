@@ -7,7 +7,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import CR.common.Constants;
+
+//import java.io.FileWriter;
 
 public class Room implements AutoCloseable {
 	private String name;
@@ -31,6 +36,10 @@ public class Room implements AutoCloseable {
 	//11/18/23
 	private final static String MUTE = "mute";
 	private final static String UNMUTE = "unmute";
+
+	//yc73
+	//11/28/23
+	private final static String SAVE_MUTED = "savemuted";
 
 	private static Logger logger = Logger.getLogger(Room.class.getName());
 
@@ -128,7 +137,7 @@ public class Room implements AutoCloseable {
                     case FLIP:
                         int toss = (int)(Math.random()*2);
 						//JEditorPane being configured to "text/html" allows the html tags to be rendered and displayed correctly
-			            sendMessage(client, String.format("<font color='#7B68EE'>Flipped a coin and got %s", toss == 0 ? "heads" : "tails" + "</font>"));
+			            sendMessage(client, String.format("<font color='#7B68EE'>Flipped a coin and got %s </font>", toss == 0 ? "heads" : "tails" /*+ "</font>"*/));
 			            break;
 
                     //yc73
@@ -172,28 +181,36 @@ public class Room implements AutoCloseable {
 					case MUTE:
 						try {
 							//grabs the target user to mute
-							String usersToMute = comm2[1];
+							String userToMute = comm2[1];
 
-							if (isValidUsername(usersToMute)) {
-								//updates the mute lsit in ServerThread
-								client.mute(usersToMute);
+							if (isValidUsername(userToMute)) {
+								//updates the mute list in ServerThread
+								client.mute(userToMute);
 
-								//created to be used to send a private message to the muted user
-								List<String> mutedUsersList = new ArrayList<>();
-								mutedUsersList.add(usersToMute);
+								//yc73
+								//11/28/23
+								client.saveMutedList(client.getClientName() + "MutedList.txt");
+
+								//yc73
+								//12/5/23
+								client.sendMuteList();
+
+								//yc73
+								//12/6/23
+								client.sendMuteStatus();
 								
 								//sends feedback to the sender
-								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#DC143C'>Users muted: " + usersToMute + "</font>");
+								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#DC143C'>Users muted: " + userToMute + "</font>");
 
 								//sends a private message to the muted user
-								sendPrivateMessage(null, mutedUsersList, "<font color='#DC143C'>You were muted by " + client.getClientName() + "</font>");
+								sendPrivateMessage(null, userToMute, "<font color='#DC143C'>You were muted by " + client.getClientName() + "</font>");
 							
 								break;
 							} 
 
 							else {
 								//if the username is not found
-								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Cannot /mute, client " + usersToMute + " does not exist</font>");
+								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Cannot /mute, client " + userToMute + " does not exist</font>");
 								break;
 							}
 						}
@@ -210,28 +227,36 @@ public class Room implements AutoCloseable {
 					case UNMUTE:
 						try {
 							//grabs the target user to unmute
-							String usersToUnmute = comm2[1];
+							String userToUnmute = comm2[1];
 							
-							if (isValidUsername(usersToUnmute)) {
+							if (isValidUsername(userToUnmute)) {
 								//updates the mute list in ServerThread
-								client.unmute(usersToUnmute);
-								
-								//created to be used to send a private message to the muted user
-								List<String> unmutedUsersList = new ArrayList<>();
-								unmutedUsersList.add(usersToUnmute);
+								client.unmute(userToUnmute);
 
+								//yc73
+								//11/28/23
+								client.removeMutedUsersFromFile(userToUnmute, client.getClientName() + "MutedList.txt");
+
+								//yc73
+								//12/5/23
+								client.sendMuteList();
+
+								//yc73
+								//12/6/23
+								client.sendUnmuteStatus();
+								
 								//sends feedback to the sender
-								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#006400'>Users unmuted: " + usersToUnmute + "</font>");
+								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#006400'>Users unmuted: " + userToUnmute + "</font>");
 
 								//sends a private message to the muted user
-								sendPrivateMessage(null, unmutedUsersList, "<font color='#006400'>You were unmuted by " + client.getClientName() + "</font>");
+								sendPrivateMessage(null, userToUnmute, "<font color='#006400'>You were unmuted by " + client.getClientName() + "</font>");
 
 								break;
 							}
 
 							else {
 								//if the username is not found
-								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Cannot /unmute, client " + usersToUnmute + " does not exist</font>");
+								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Cannot /unmute, client " + userToUnmute + " does not exist</font>");
 								break;
 							}
 						}
@@ -242,6 +267,22 @@ public class Room implements AutoCloseable {
 							break;
 						}
 
+						//yc73
+						//11/28/23
+						case SAVE_MUTED:
+					        try {
+								client.saveMutedList(client.getClientName() + "MutedList.txt");
+
+								client.sendMessage(Constants.DEFAULT_CLIENT_ID, "<font color='#696969'>Your muted list has been saved.</font>");
+								
+								break;
+							} 
+									
+							catch (Exception e) {
+								e.printStackTrace();
+								JOptionPane.showMessageDialog(new JFrame(), "Error occurred while saving mute list.");
+								break;
+							}
 
 					default:
 						wasCommand = false;
@@ -261,17 +302,16 @@ public class Room implements AutoCloseable {
 				if (isValidUsername(targetUsername)) {
 					//if the username exists, it considers the message as a private message
 					wasCommand = true;
-					//creates a new empty list to store usernames and keep track of who the private message is being sent to
-					List<String> pmClients = new ArrayList<String>();
-					//the username is added to the list 'pmClients'
-					pmClients.add(targetUsername);
-					//calls the 'sendPrivateMessage' method to actually send the message to the correct user
+
+					//creates a variable to store username and keep track of who the private message is being sent to
+					String pmClient = targetUsername;
 
 					//sends to sender
 					client.sendMessage(client.getClientId(), "<font color='#5f5f5f'>(Whispered) </font>" + replaceMessage(message));
 
 					//sends to client
-					sendPrivateMessage(client, pmClients, "<font color='#5f5f5f'>(Whisper) </font>" + message);
+					//calls the 'sendPrivateMessage' method to actually send the message to the correct user
+					sendPrivateMessage(client, pmClient, "<font color='#5f5f5f'>(Whisper) </font>" + message);
 
 				} else {
 					//if the username is not found then the message will be considered a regular message (in case they did not want to use @ as a command but as a regular message)
@@ -376,14 +416,14 @@ public class Room implements AutoCloseable {
 
 	//yc73
 	//11/17/23
-	protected synchronized void sendPrivateMessage(ServerThread sender, List<String> ClientsList, String message) {
+	protected synchronized void sendPrivateMessage(ServerThread sender, String user, String message) {
 		Iterator<ServerThread> iter = clients.iterator();
 		message = replaceMessage(message);
 		long from = (sender == null) ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
 
 		while (iter.hasNext()) {
 			ServerThread client = iter.next();
-			if (ClientsList.contains(client.getClientName())) {
+			if (user.equals(client.getClientName())) {
 				//checks if the sender is muted by the client
 				if (sender == null || !client.isMuted(sender.getClientName())) {
 					boolean messageSent = client.sendMessage(from, message);

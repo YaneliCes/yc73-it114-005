@@ -1,7 +1,7 @@
 package CR.client.views;
 
 import java.awt.BorderLayout;
-
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ContainerEvent;
@@ -100,4 +100,33 @@ public class UserListPanel extends JPanel {
             userListArea.remove(c);
         }
     }
+
+    //yc73
+    //12/5/23
+    protected void onMutedUserList(String userMuteStatus, Long Id) {
+        Component[] cs = userListArea.getComponents();
+        for (Component c : cs) {
+            if (userMuteStatus.equals("mute") && c.getName().trim().equals(""+Id)){
+                c.setForeground(Color.GRAY);
+            }
+            else if (userMuteStatus.equals("unmute") && c.getName().trim().equals(""+Id)){
+                c.setForeground(Color.BLACK);
+            }
+       }
+    }
+
+    //yc73
+    //12/6/23
+    protected void messageHighlight(Long Id) {
+        Component[] cs = userListArea.getComponents();
+        for (Component c :cs) {
+            if (c.getName().trim().equals(""+Id)){
+                c.setForeground(Color.ORANGE);
+            }
+            else {
+                c.setForeground(Color.BLACK);
+            }
+        }
+    }
+
 }

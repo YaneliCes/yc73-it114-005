@@ -60,7 +60,9 @@ public class RoomsPanel extends JPanel {
                 String query = searchValue.getText().trim();
                 if (query.length() > 0) {
                     removeAllRooms();
-                    Client.INSTANCE.sendGetRooms(query);
+                    //yc73
+                    //12/5/23
+                    Client.INSTANCE.sendJoinRoom(query);
                     message.setText("Sent query");
                 } else {
                     message.setText("Can't search with an empty query");
