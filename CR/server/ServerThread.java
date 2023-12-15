@@ -316,8 +316,17 @@ public class ServerThread extends Thread {
                 addMutedUsersFromFile(this.getClientName() + "MutedList.txt"); 
 
                 //yc73
-                //12/6/23
-                sendMuteList();
+                //12/11/23
+                //help from sajid (there was a random small connecting bug)
+                try{
+                    Thread.sleep(10);
+                    //yc73
+                    //12/6/23
+                    sendMuteList();
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
 
                 break;
             case DISCONNECT:
